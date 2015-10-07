@@ -1,5 +1,5 @@
 var strip = require('rpi-ws281x-native'),
-  Clock = require('./Clock')
+  Clock = require('./lib/Clock')
 
 var clock = new Clock()
 

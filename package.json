@@ -11,8 +11,12 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/achingbrain/clockbot.git"
-  }
+  },
   "dependencies": {
+    "hapi": "^8.4.0",
+    "jquery": "^2.1.3",
+    "map-range": "^0.1.2",
+    "mcp3008.js": "0.2.0",
     "rpi-ws281x-native": "^0.1.4"
   }
 }
