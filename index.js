@@ -10,9 +10,9 @@ var tron = require('./lib/colours/tron')
 var wheel = require('./lib/colours/wheel')
 var walk = require('./lib/colours/walk')
 
-var startTime = new Date('2015-10-10T12:00:00');
+var startTime = moment('2015-10-10 12:00:00+01:00');
 var endTime = moment('2015-10-11 12:00:00+01:00');
-var startTime = moment('2015-10-08 20:00:00+01:00');
+//var startTime = moment('2015-10-08 20:00:00+01:00');
 //var endTime = moment('2015-10-08 20:13:00+01:00');
 var clock = new Clock()
 var offset = 0
