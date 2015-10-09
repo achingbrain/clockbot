@@ -6,11 +6,14 @@ var green = require('./lib/colours/green')
 var yellow = require('./lib/colours/yellow')
 var flash = require('./lib/colours/flash')
 var rgb = require('./lib/colours/rgb')
+var tron = require('./lib/colours/tron')
+var wheel = require('./lib/colours/wheel')
+var walk = require('./lib/colours/walk')
 
 var startTime = new Date('2015-10-10T12:00:00');
 var endTime = moment('2015-10-11 12:00:00+01:00');
-//var startTime = moment('2015-10-01 19:34:00+01:00');
-//var endTime = moment('2015-10-08 20:05:00+01:00');
+var startTime = moment('2015-10-08 20:00:00+01:00');
+//var endTime = moment('2015-10-08 20:13:00+01:00');
 var clock = new Clock()
 var offset = 0
 var frequency = 5 // about 80Hz
@@ -21,6 +24,8 @@ function findRemaining () {
 }
 
 function paint () {
+   var now = moment(new Date())
+
   if (moment(Date.now()).isBefore(startTime)) {
     return clock.setTime(0, 0, 0, green)
   }
@@ -38,6 +43,10 @@ function paint () {
   }
 
   var colour = green
+
+  if (now.get('minutes') < 6) {
+    colour = now.get('hours') % 2 === 0 ? tron : wheel
+  }
 
   if (remaining.asHours() < 1) {
     colour = yellow
