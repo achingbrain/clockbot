@@ -26,17 +26,19 @@ function findRemaining () {
 function paint () {
    var now = moment(new Date())
 
-  if (moment(Date.now()).isBefore(startTime)) {
+  if (now.isBefore(startTime)) {
     return clock.setTime(0, 0, 0, green)
   }
 
   var remaining = findRemaining()
 
   if (remaining.asMilliseconds() <= 0) {
+    // flash for 20 seconds
     if (remaining.asSeconds() > -20) {
       return clock.setTime(0, 0, 0, flash.bind(null, red))
     }
 
+    // then fade out over 100 seconds
     var r = Math.max(parseInt(255 * ((100 + remaining.asSeconds()) / 100), 10), 0)
 
     return clock.setTime(0, 0, 0, rgb(r, 0, 0))
@@ -44,15 +46,18 @@ function paint () {
 
   var colour = green
 
-  if (now.get('minutes') < 6) {
+  if (now.get('minutes') < 2) {
+    // show an animation for the first two minutes of every hour
     colour = now.get('hours') % 2 === 0 ? tron : wheel
   }
 
   if (remaining.asHours() < 1) {
+    // last hour turns yellow
     colour = yellow
   }
 
   if (remaining.asHours() < 1 && remaining.asMinutes() < 1) {
+    // last minute turns red and shows ms
     colour = red
 
     clock.setTime(remaining.get('minutes'), remaining.get('seconds'), remaining.get('milliseconds'), colour)
