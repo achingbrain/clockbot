@@ -10,64 +10,34 @@ var tron = require('./lib/colours/tron')
 var wheel = require('./lib/colours/wheel')
 var walk = require('./lib/colours/walk')
 
-var startTime = moment('2015-10-10 12:00:00+01:00');
-var endTime = moment('2015-10-11 12:00:00+01:00');
-//var startTime = moment('2015-10-08 20:00:00+01:00');
-//var endTime = moment('2015-10-08 20:13:00+01:00');
 var clock = new Clock()
 var offset = 0
 var frequency = 5 // about 80Hz
 
-function findRemaining () {
-  var ms = moment(endTime).diff(Date.now(), 'ms')
-  return moment.duration(ms)
-}
+var map = require('map-range')
+var mapColour = map(function (x) {return x}, 480, 1439, 0, 255)
+var actualWheel = require('./lib/animations/wheel')
 
 function paint () {
-   var now = moment(new Date())
+  var now = moment(new Date())
+  var minutes = (now.get('hours') * 60) + now.get('minutes')
 
-  if (now.isBefore(startTime)) {
-    return clock.setTime(0, 0, 0, green)
+  var colour = function () {
+    return actualWheel(mapColour(minutes))
   }
 
-  var remaining = findRemaining()
-
-  if (remaining.asMilliseconds() <= 0) {
-    // flash for 20 seconds
-    if (remaining.asSeconds() > -20) {
-      return clock.setTime(0, 0, 0, flash.bind(null, red))
-    }
-
-    // then fade out over 100 seconds
-    var r = Math.max(parseInt(255 * ((100 + remaining.asSeconds()) / 100), 10), 0)
-
-    return clock.setTime(0, 0, 0, rgb(r, 0, 0))
-  }
-
-  var colour = green
-
-  if (now.get('minutes') < 2) {
-    // show an animation for the first two minutes of every hour
+  if (now.get('minutes') === 0) {
+    // show an animation for the first minute of every hour
     colour = now.get('hours') % 2 === 0 ? tron : wheel
   }
 
-  if (remaining.asHours() < 1) {
-    // last hour turns yellow
-    colour = yellow
+  if (now.get('hours') > 23 || now.get('hours') < 8) {
+    colour = function () {
+      return {r: 0, g: 0, b: 0}
+    }
   }
 
-  if (remaining.asHours() < 1 && remaining.asMinutes() < 1) {
-    // last minute turns red and shows ms
-    colour = red
-
-    clock.setTime(remaining.get('minutes'), remaining.get('seconds'), remaining.get('milliseconds'), colour)
-
-    return
-  }
-
-  var hours = (remaining.get('days') * 24) + remaining.get('hours')
-
-  clock.setTime(hours, remaining.get('minutes'), remaining.get('seconds'), colour)
+  clock.setTime(now.get('hours'), now.get('minutes'), now.get('seconds'), colour)
 }
 
 setInterval(paint, frequency)
